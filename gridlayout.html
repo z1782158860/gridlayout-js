@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GridLayout组件库开发文档</title>
+    <script src="js/gridlayout.js"></script>
+    <script src="js/static/notify.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #1a2a6c;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #555;
+            font-size: 1.4rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .section-title {
+            color: #1a2a6c;
+            border-bottom: 2px solid #fdbb2d;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            font-size: 1.5rem;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background: #1a2a6c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: #0d1a4d;
+            transform: translateY(-2px);
+        }
+
+        .btn.secondary {
+            background: #b21f1f;
+        }
+
+        .btn.secondary:hover {
+            background: #8c1919;
+        }
+
+        .btn.warning {
+            background: #fdbb2d;
+            color: #333;
+        }
+
+        .btn.warning:hover {
+            background: #e0a425;
+        }
+
+        .btn.info {
+            background: #1a73e8;
+        }
+
+        .btn.info:hover {
+            background: #0d5ebd;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: left;
+            margin: 20px 0;
+        }
+
+        #grid-container {
+            min-height: 600px;
+            margin-bottom: 30px;
+            border: 2px dashed rgba(26, 42, 108, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .widget {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+        }
+
+        .widget-header {
+            background: #1a2a6c;
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .widget-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+        }
+
+        .widget-icon {
+            font-size: 1.5rem;
+        }
+
+        .widget-body {
+            padding: 15px;
+            flex-grow: 1;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+            scrollbar-width: none;
+        }
+
+        .widget-footer {
+            padding: 10px 15px;
+            background: #f0f0f0;
+            text-align: right;
+        }
+
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .api-section {
+            margin-bottom: 40px;
+        }
+
+        .method {
+            background: #f1f8ff;
+            padding: 20px;
+            border-left: 4px solid #1a2a6c;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .method-title {
+            color: #1a2a6c;
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .method-description {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .params {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .param {
+            margin-bottom: 12px;
+        }
+
+        .param-name {
+            font-weight: bold;
+            color: #b21f1f;
+            display: inline-block;
+            min-width: 120px;
+        }
+
+        .param-type {
+            color: #fdbb2d;
+            background: rgba(253, 187, 45, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin: 0 5px;
+        }
+
+        .param-desc {
+            display: block;
+            margin-top: 5px;
+            margin-left: 125px;
+            color: #555;
+        }
+
+        .example {
+            background: #e8f4f8;
+            padding: 20px;
+            border-left: 4px solid #1a2a6c;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .example-title {
+            color: #1a2a6c;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .widget-link {
+            display: block;
+            padding: 12px;
+            margin: 12px 0;
+            background: #f0f5ff;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #1a2a6c;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.1rem;
+        }
+
+        .widget-link:hover {
+            background: #1a2a6c;
+            color: white;
+        }
+
+        .tag-group-links {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        .alarm-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .alarm-input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            flex-grow: 1;
+            font-size: 1rem;
+        }
+
+        .notes-textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            resize: none;
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+
+        .notes-save {
+            margin-top: 15px;
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-box {
+            background: #f0f5ff;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a73e8;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .chart-container {
+            height: 150px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 0 10px;
+        }
+
+        .chart-bar {
+            width: 30px;
+            background: #1a73e8;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            cursor: pointer;
+            transition: height 0.5s ease;
+        }
+
+        .chart-label {
+            position: absolute;
+            bottom: -25px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+
+        .chart-value {
+            position: absolute;
+            top: -25px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .counter-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .counter-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: #1a73e8;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .counter-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .form-submit {
+            padding: 12px;
+            width: 100%;
+            background: #34a853;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        .form-submit:hover {
+            background: #2d8e47;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: white;
+            margin-top: 50px;
+            font-size: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+            margin-right: 5px;
+        }
+
+        .tab.active {
+            background: white;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>GridLayout组件库开发文档</h1>
+            <p class="subtitle">一个灵活的响应式网格布局系统，支持拖拽、小组件集成和自适应布局</p>
+        </header>
+
+        <div class="content">
+            <div class="section">
+                <h2 class="section-title"><i>📱</i> 功能演示</h2>
+
+                <div class="controls">
+                    <div class="btn-group">
+                        <button id="add-clock" class="btn info"><i>⏱️</i> 添加时钟组件</button>
+                        <button id="add-counter" class="btn"><i>🔢</i> 添加计数器</button>
+                        <button id="add-form" class="btn"><i>📝</i> 添加表单组件</button>
+                        <button id="add-dynamic" class="btn"><i>🌐</i> 添加动态小组件</button>
+                    </div>
+
+                    <div class="btn-group">
+                        <button id="export-btn" class="btn info"><i>💾</i> 导出布局</button>
+                        <button id="import-btn" class="btn info"><i>📤</i> 导入布局</button>
+                        <button id="reset-btn" class="btn secondary"><i>🔄</i> 重置布局</button>
+                    </div>
+                </div>
+
+                <div id="grid-container"></div>
+
+                <div class="code-block" id="json-output">
+                    {/* JSON输出区域 */}
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title"><i>📚</i> 组件文档</h2>
+
+                <div class="tabs">
+                    <div class="tab active" data-tab="overview">概述</div>
+                    <div class="tab" data-tab="api">API文档</div>
+                </div>
+
+                <div class="tab-content active" id="overview-tab">
+                    <div class="note">
+                        <p><strong>GridLayout</strong> 是一个灵活的网格布局系统，支持拖拽操作、响应式布局和各种小组件的集成。主要特性包括：</p>
+                        <ul style="padding-left: 30px; margin-top: 15px;">
+                            <li>支持自定义尺寸（任意cols/rows组合）</li>
+                            <li>底部支持拖拽移动和调整位置</li>
+                            <li>触摸设备支持</li>
+                            <li>响应式布局调整</li>
+                            <li>小组件集成和隔离</li>
+                            <li>布局导入/导出功能</li>
+                            <li>独立数据支持</li>
+                            <li>支持从URL动态加载小组件资源</li>
+                        </ul>
+                    </div>
+
+                    <h3>尺寸配置</h3>
+                    <div class="code-block">
+                        // 支持自定义尺寸<br>
+                        sizes: [<br>
+                        &nbsp;&nbsp;{ cols: 1, rows: 1 }, // 100×100px<br>
+                        &nbsp;&nbsp;{ cols: 2, rows: 1 }, // 220×100px<br>
+                        &nbsp;&nbsp;{ cols: 2, rows: 2 }, // 220×220px<br>
+                        &nbsp;&nbsp;{ cols: 4, rows: 2 } // 460×220px<br>
+                        ]
+                    </div>
+
+                    <h3>小组件结构</h3>
+                    <div class="code-block">
+                        const grid = new GridLayout('#grid-container');<br>
+                        grid.init();<br><br>
+                        //设置全局暴露数据<br>
+                        grid.setExposedGlobals({<br>
+                        &nbsp;&nbsp;func1, //支持函数<br>
+                        &nbsp;&nbsp;var1, //支持变量<br>
+                        &nbsp;&nbsp;notify: window.alert, //支持重命名<br>
+                        &nbsp;&nbsp;...<br>
+                        });<br><br>
+                        // 示例1：直接添加小组件内容<br>
+                        grid.addItem(<br>
+                        &nbsp;&nbsp;{cols: 2, rows: 2}, <br>
+                        &nbsp;&nbsp;{<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;text: '示例组件',<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;html: '&lt;div&gt;Hello World&lt;/div&gt;',<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;css: 'div { color: red; }',<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;js: 'notify.info(GridLayout.globals.apiKey); //调用暴露函数<br>
+                        &nbsp;&nbsp;},<br>
+                        &nbsp;&nbsp;{<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;apiKey: "12345", //独立暴露数据，可用于独立传递数据<br>
+                        &nbsp;&nbsp;},<br>
+                        &nbsp;&nbsp;{x:0,y:0} <br>
+                        );<br><br>
+                        
+                        // 示例2：动态加载小组件（通过URL）<br>
+                        grid.addItem(<br>
+                        &nbsp;&nbsp;{cols: 2, rows: 2}, <br>
+                        &nbsp;&nbsp;{<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;htmlUrl: 'widgets/dynamic.html',<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;cssUrl: 'widgets/dynamic.css',<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;jsUrl: 'widgets/dynamic.js',<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;text: '动态加载组件'<br>
+                        &nbsp;&nbsp;},<br>
+                        &nbsp;&nbsp;{notify}, <br>
+                        &nbsp;&nbsp;{x:0,y:0} <br>
+                        );
+                    </div>
+
+                    <div class="note">
+                        <p><strong>作用域处理：</strong> GridLayout会自动为每个小组件的CSS和JS创建独立的作用域，避免冲突。</p>
+                        <p><strong>动态加载机制：</strong> 使用URL方式加载的资源会被异步获取并应用，系统会自动处理加载状态和错误处理。</p>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="api-tab">
+                    <div class="api-section">
+                        <h3>构造函数</h3>
+                        <div class="method">
+                            <div class="method-title"><i>⚙️</i> new GridLayout(containerSelector)</div>
+                            <div class="method-description">创建GridLayout实例</div>
+                            <div class="params">
+                                <div class="param">
+                                    <span class="param-name">containerSelector</span>
+                                    <span class="param-type">string</span>
+                                    <span class="param-desc">网格容器的CSS选择器</span>
+                                </div>
+                            </div>
+                            <div class="example">
+                                <div class="example-title"><i>💡</i> 示例：</div>
+                                <div class="code-block">
+                                    const grid = new GridLayout('#grid-container');<br>
+                                    grid.init();
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3>核心方法</h3>
+
+                        <div class="method">
+                            <div class="method-title"><i>➕</i> addItem(size, widgetData = null, widgetGlobals = null, position = null)</div>
+                            <div class="method-description">添加一个新项目到网格布局</div>
+                            <div class="params">
+                                <div class="param">
+                                    <span class="param-name">size</span>
+                                    <span class="param-type">object</span>
+                                    <span class="param-desc">项目尺寸 {cols: number, rows: number}</span>
+                                </div>
+                                <div class="param">
+                                    <span class="param-name">widgetData</span>
+                                    <span class="param-type">object | null</span>
+                                    <span class="param-desc">小组件数据 {text: string, html: string, css: string, js: string} 或 {htmlUrl: string, cssUrl: string, jsUrl: string, text: string}</span>
+                                </div>
+                                <div class="param">
+                                    <span class="param-name">widgetGlobals</span>
+                                    <span class="param-type">object | null</span>
+                                    <span class="param-desc">小组件独立暴露数据 {a,b,c...} //任意可序列化数据类型，可省略，一般用于给小组件传递数据</span>
+                                </div>
+                                <div class="param">
+                                    <span class="param-name">position</span>
+                                    <span class="param-type">object | null</span>
+                                    <span class="param-desc">位置信息 {x:0,y:0} //省略时自动寻找合适位置，一般在恢复布局时使用</span>
+                                </div>
+                            </div>
+                            <div class="example">
+                                <div class="example-title"><i>💡</i> 示例：</div>
+                                <div class="code-block">
+                                    // 示例1：直接添加小组件内容<br>
+                                    grid.addItem(<br>
+                                    &nbsp;&nbsp;{cols: 2, rows: 2}, <br>
+                                    &nbsp;&nbsp;{<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;html: '&lt;div&gt;Hello World&lt;/div&gt;',<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;css: 'div { color: red; }',<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;js: 'console.log("Component loaded");'<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;text: '示例组件'<br>
+                                    &nbsp;&nbsp;}<br>
+                                    );<br><br>
+                                    
+                                    // 示例2：动态加载小组件（通过URL）<br>
+                                    grid.addItem(<br>
+                                    &nbsp;&nbsp;{cols: 2, rows: 2}, <br>
+                                    &nbsp;&nbsp;{<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;htmlUrl: 'widgets/dynamic.html',<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;cssUrl: 'widgets/dynamic.css',<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;jsUrl: 'widgets/dynamic.js',<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;text: '动态加载组件'<br>
+                                    &nbsp;&nbsp;}<br>
+                                    );
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="method">
+                            <div class="method-title"><i>➖</i> removeItem(itemId)</div>
+                            <div class="method-description">从网格中移除项目</div>
+                            <div class="params">
+                                <div class="param">
+                                    <span class="param-name">itemId</span>
+                                    <span class="param-type">number</span>
+                                    <span class="param-desc">要移除的项目ID</span>
+                                </div>
+                            </div>
+                            <div class="example">
+                                <div class="example-title"><i>💡</i> 示例：</div>
+                                <div class="code-block">
+                                    // 删除小组件<br>
+                                    const grid = new GridLayout('#grid-container');<br>
+                                    grid.init();<br>
+                                    const itemId = grid.addItem(...);<br>
+                                    grid.removeItem(itemId);
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="method">
+                            <div class="method-title"><i>📋</i> getLayoutJson()</div>
+                            <div class="method-description">获取当前布局的JSON表示</div>
+                            <div class="code-block">
+                                const layoutJson = grid.getLayoutJson();<br>
+                                console.log(layoutJson);
+                            </div>
+                        </div>
+
+                        <div class="method">
+                            <div class="method-title"><i>📥</i> importLayout(json)</div>
+                            <div class="method-description">从JSON导入布局</div>
+                            <div class="params">
+                                <div class="param">
+                                    <span class="param-name">json</span>
+                                    <span class="param-type">string</span>
+                                    <span class="param-desc">布局的JSON字符串</span>
+                                </div>
+                            </div>
+                            <div class="code-block">
+                                grid.importLayout(json);
+                            </div>
+                        </div>
+
+                        <div class="method">
+                            <div class="method-title"><i>🔄</i> reset()</div>
+                            <div class="method-description">重置布局到初始状态</div>
+                            <div class="code-block">
+                                grid.reset();
+                            </div>
+                        </div>
+
+                        <div class="method">
+                            <div class="method-title"><i>🌐</i> setExposedGlobals(globals)</div>
+                            <div class="method-description">设置暴露给小组件的全局对象</div>
+                            <div class="params">
+                                <div class="param">
+                                    <span class="param-name">globals</span>
+                                    <span class="param-type">object</span>
+                                    <span class="param-desc">要暴露的全局对象</span>
+                                </div>
+                            </div>
+                            <div class="example">
+                                <div class="example-title"><i>💡</i> 示例：</div>
+                                <div class="code-block">
+                                    // 暴露notify对象给小组件<br>
+                                    grid.setExposedGlobals({<br>
+                                    &nbsp;&nbsp;notify: window.notify,<br>
+                                    &nbsp;&nbsp;...<br>
+                                    });
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <footer>
+                    <p>GridLayout 组件库开发文档 &copy; 2025 - 灵活的响应式网格布局系统</p>
+                </footer>
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    // 初始化网格布局
+                    const grid = new GridLayout('#grid-container');
+                    grid.setExposedGlobals({
+                        notify: window.notify
+                    });
+                    grid.init();
+
+                    // 获取DOM元素
+                    const jsonOutput = document.getElementById('json-output');
+                    const exportBtn = document.getElementById('export-btn');
+                    const importBtn = document.getElementById('import-btn');
+                    const resetBtn = document.getElementById('reset-btn');
+
+                    // 标签切换功能
+                    document.querySelectorAll('.tab').forEach(tab => {
+                        tab.addEventListener('click', () => {
+                            // 移除所有active类
+                            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                            // 添加active类
+                            tab.classList.add('active');
+                            document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+                        });
+                    });
+
+                    // 更新JSON输出
+                    function updateJsonOutput() {
+                        jsonOutput.textContent = grid.getLayoutJson();
+                    }
+
+                    // 导出布局
+                    exportBtn.addEventListener('click', () => {
+                        updateJsonOutput();
+                        notify.info('布局已导出到下方JSON区域！');
+                    });
+
+                    // 导入布局
+                    importBtn.addEventListener('click', () => {
+                        const json = prompt('请粘贴布局JSON:');
+                        if (json) {
+                            if (grid.importLayout(json)) {
+                                updateJsonOutput();
+                                notify.success('布局导入成功！');
+                            } else {
+                                notify.error('布局导入失败，请检查JSON格式！');
+                            }
+                        }
+                    });
+
+                    // 重置布局
+                    resetBtn.addEventListener('click', () => {
+                            grid.reset();
+                            updateJsonOutput();
+                            notify.warning('布局已重置！');
+                    });
+
+
+                    // 添加时钟组件
+                    document.getElementById('add-clock').addEventListener('click', function () {
+                        const id = grid.addItem(
+                            { cols: 2, rows: 1 },
+                            {
+                                text: '时钟',
+                                html: '<div class="widget"><div class="widget-body" style="text-align:center;padding:20px;"><div id="clock-time" style="font-size:1.8rem;"></div><div id="clock-date"></div></div></div>',
+                                css: '.widget { background: #fff; border-radius: 10px; }',
+                                js: `(function() {
+                        function updateClock() {
+                            const now = new Date();
+                            const timeStr = now.toLocaleTimeString();
+                            const dateStr = now.toLocaleDateString();
+                            document.getElementById('clock-time').textContent = timeStr;
+                            document.getElementById('clock-date').textContent = dateStr;
+                        }
+                        
+                        updateClock();
+                        setInterval(updateClock, 1000);
+                    })();`
+                            }
+                        );
+
+                        updateJsonOutput();
+                    });
+
+                    // 添加计数器组件
+                    document.getElementById('add-counter').addEventListener('click', function () {
+                        const id = grid.addItem(
+                            { cols: 2, rows: 1 },
+                            {
+                                text: '计数器',
+                                html: '<div class="widget"><div class="widget-body" style="text-align:center;"><div id="counter-value" style="font-size:1rem;font-weight:bold;">0</div><div style="margin-top:10px;display:flex;justify-content:center;gap:10px;"><button id="decrement" class="btn">-</button><button id="increment" class="btn">+</button></div></div></div>',
+                                css: '.widget { background: #fff; } .btn { padding: 8px 15px; }',
+                                js: `(function() {
+                        let count = 0;
+                        const counterElement = document.getElementById('counter-value');
+                        
+                        function updateCounter() {
+                            counterElement.textContent = count;
+                        }
+                        
+                        document.getElementById('increment').addEventListener('click', function() {
+                            count++;
+                            updateCounter();
+                        });
+                        
+                        document.getElementById('decrement').addEventListener('click', function() {
+                            if (count > 0) count--;
+                            updateCounter();
+                        });
+                    })();`
+                            }
+                        );
+                        updateJsonOutput();
+                    });
+
+                    // 添加表单组件
+                    document.getElementById('add-form').addEventListener('click', function () {
+                        const id = grid.addItem(
+                            { cols: 2, rows: 4 },
+                            {
+                                html: '<div class="widget"><div class="widget-header"><span>📝</span> 用户反馈</div><div class="widget-body"><div class="form-group"><label class="form-label">姓名</label><input type="text" class="form-input" id="feedback-name"></div><div class="form-group"><label class="form-label">反馈内容</label><textarea class="form-input" id="feedback-content" rows="3"></textarea></div><button class="form-submit" id="feedback-submit">提交反馈</button></div></div>',
+                                css: '.widget { background: #fff; } .form-input { margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; width: 100%; } .form-submit { padding: 12px; width: 100%; background: #1a73e8; color: white; border: none; border-radius: 4px; cursor: pointer; }',
+                                js: `(function() {
+                        document.getElementById('feedback-submit').addEventListener('click', function() {
+                            const name = document.getElementById('feedback-name').value || '匿名用户';
+                            GridLayout.globals.notify.info(\`\${name}，感谢您的反馈！\`);
+                        });
+                    })();`
+                            }
+                        );
+                        updateJsonOutput();
+                    });
+
+                    // 添加动态小组件
+                    document.getElementById('add-dynamic').addEventListener('click', function () {
+                        const id = grid.addItem(
+                            { cols: 2, rows: 2 },
+                            {
+                                htmlUrl: 'test/test.html',
+                                cssUrl: 'test/test.css',
+                                jsUrl: 'test/test.js',
+                                text: '动态加载组件'
+                            }
+                        );
+                        updateJsonOutput();
+                    });
+                });
+            </script>
+</body>
+
+</html>
