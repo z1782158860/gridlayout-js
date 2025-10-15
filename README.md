@@ -1,4 +1,4 @@
 # gridlayout-js
 轻量级、零依赖的响应式拖拽网格布局引擎，支持动态微件、JSON 导入导出、触控/鼠标双模式，原生js。
 
-详细使用方式及文档详见[index.html](/index.html)
+详细使用方式及文档详见[gridlayout.html](gridlayout.html)
